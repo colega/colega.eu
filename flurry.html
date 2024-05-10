@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background-color: #000;
+    }
+
+    canvas {
+      display: block;
+    }
+  </style>
+  <title>Flakes</title>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const flakes = [];
+
+    function createFlake() {
+      const size = 10 / Math.exp(Math.random() * 3);
+      return {
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: size,
+        speed: Math.random() * size + 1,
+        opacity: Math.random(),
+        r: Math.random() * 255,
+        g: Math.random() * 255,
+        b: Math.random() * 255,
+      };
+    }
+
+    function drawFlake(flake) {
+      ctx.fillStyle = `rgba(${flake.r}, ${flake.g}, ${flake.b}, ${flake.opacity})`;
+      ctx.beginPath();
+      ctx.arc(flake.x, flake.y, flake.size, 0, Math.PI * 2);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    function updateFlakes() {
+      for (let i = 0; i < flakes.length; i++) {
+        const flake = flakes[i];
+
+        flake.y += flake.speed;
+
+        if (flake.y > canvas.height) {
+          flakes[i] = createFlake();
+        }
+      }
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (let i = 0; i < flakes.length; i++) {
+        drawFlake(flakes[i]);
+      }
+
+      updateFlakes();
+
+      requestAnimationFrame(draw);
+    }
+
+    function initialize() {
+      for (let i = 0; i < 100; i++) {
+        flakes.push(createFlake());
+      }
+
+      draw();
+    }
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    initialize();
+  </script>
+</body>
+</html>
