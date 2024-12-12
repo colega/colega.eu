@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<head>
+    <title>Map</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <link rel="stylesheet" href="map.css">
+    <script>
+        function initMap() {
+            let lat = 20.9799107;
+            let lng = 19.5041173;
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 14,
+                center: {
+                    lat: lat,
+                    lng: lng,
+                },
+                disableDefaultUI: true,
+                mapTypeId: 'satellite',
+                gestureHandling: 'none',
+            });
+            window.map = map;
+            const step = 0.0001;
+
+            function panTo() {
+                const center = map.getCenter();
+                if (Math.abs(center.lat() - lat) < step / 2 && Math.abs(center.lng() - lng) < step / 2) {
+                    console.log('panning');
+                    lat = lat + step;
+                    lng = lng + step;
+                    map.panTo({lat: lat, lng: lng});
+                } else {
+                    console.log(`waiting: ${center.lat()} != ${lat} || ${center.lng()} != ${lng}`);
+                }
+                //window.requestAnimationFrame(pan);
+            }
+            function panBy() {
+                map.panBy(0.25, 0.25);
+            }
+            window.setInterval(panBy, 100);
+            //window.requestAnimationFrame(pan);
+        }
+
+
+        window.initMap = initMap;
+    </script>
+</head>
+<body>
+<div id="map"></div>
+<script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&callback=initMap&v=weekly"
+        defer
+></script>
+</body>
+</html>
